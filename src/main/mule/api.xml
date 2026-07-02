@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e0a509d0-8660-4c90-aa97-4f1b22c46286" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="e707c403-6d3c-4075-b5aa-c6820b0d85f6" file="${env}.yaml" />
+	<flow name="apiFlow" doc:id="fa7a4f51-a3ba-44bc-bcc1-6093a968b36a" >
+		<http:listener doc:name="Listener" doc:id="3d3ee464-257e-4294-948e-b4e0f175ca4c" config-ref="HTTP_Listener_config" path="${http.path}"/>
+		<logger level="INFO" doc:name="Logger" doc:id="ceaeae63-cf72-4646-bc98-8abf0a017366" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="321951b5-e52c-4abc-8151-2d0894ed0e44" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"multiply" : payload.a * payload.b
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b2cfaa83-4bb4-4f55-83ca-3e4ec1be9c4b" message="=======SUCCESSFULLU DEPELOYED========="/>
+	</flow>
+</mule>
